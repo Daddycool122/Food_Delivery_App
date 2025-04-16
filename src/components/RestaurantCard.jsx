@@ -4,44 +4,52 @@ import UserContext from "../../utils/UserContext";
 import { CDN_URL } from "../../utils/constants";
 
 function RestaurentCard(props) {
-    const {loggedInUser} = useContext(UserContext);
-    const { resData } = props; // Destructure resData directly from props
-    const {name,locality,cuisines,avgRating,costForTwo,cloudinaryImageId} = resData?.info;
-    return (
-        <div className=" m-2 h-[400px] p-2 w-60 bg-gray-200 rounded-lg hover:bg-gray-200  hover:border border-yellow-500 ">
-            <img
-                className="h-40 w-60 rounded-lg"
-                src={`${CDN_URL+cloudinaryImageId}`}
-                alt={name}
-            />
-            <h3 className="font-bold text-lg py-1">{name}</h3>
-            <h4>{locality}</h4>
-            <h4>{cuisines.join(`,\n`)}</h4>
-            <h5 >{avgRating}</h5>
-            <h5 >{costForTwo}</h5>
-            <h5>User: {loggedInUser}</h5>
-           
+  const { loggedInUser } = useContext(UserContext);
+  const { resData } = props;
+  const { name, locality, cuisines, avgRating, costForTwo, cloudinaryImageId } =
+    resData?.info;
+
+  return (
+    <div className="relative bg-gray-100 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 w-full">
+      <img
+        className="w-full h-40 object-cover rounded-t-lg"
+        src={`${CDN_URL + cloudinaryImageId}`}
+        alt={name}
+        loading="lazy"
+      />
+      <div className="p-4">
+        <h3 className="font-bold text-lg truncate">{name}</h3>
+        <h4 className="text-sm text-gray-600 truncate">{locality}</h4>
+        <p className="text-sm text-gray-700 line-clamp-2">
+          {cuisines.join(", ")}
+        </p>
+        <div className="flex justify-between items-center mt-2">
+          <h5 className="text-sm font-semibold">{avgRating} ⭐</h5>
+          <h5 className="text-sm">{costForTwo}</h5>
         </div>
+        <h5 className="text-xs text-gray-500 mt-1">User: {loggedInUser}</h5>
+      </div>
+    </div>
+  );
+}
+
+export const IsOpen = (RestaurentCard) => {
+  return (props) => {
+    const { resData } = props;
+    const { isOpen } = resData?.info;
+    return (
+      <div className="relative">
+        <label
+          className={`absolute top-2 left-2 px-2 py-1 text-white rounded-sm ${
+            isOpen ? "bg-green-600" : "bg-red-600"
+          }`}
+        >
+          {isOpen ? "Open" : "Closed"}
+        </label>
+        <RestaurentCard {...props} />
+      </div>
     );
+  };
 };
 
-    //Higher order component---> input (restaurant card)---> output(restaurant card isOpen)
-    
-   export const IsOpen = (RestaurentCard)=>{
-    return (props)=>{
-        const { resData } = props; // Destructure resData directly from props
-        const {isOpen} = resData?.info;
-        return (
-            <div>
-                {isOpen
-                ?
-                <label className="absolute bg-green-600 text-white  p-1 m-2 rounded-sm"> open</label>
-                :
-                <label className="absolute bg-red-600 text-black m-2 p-1 rounded-sm"> closed</label>
-                }
-                <RestaurentCard {...props}/>
-            </div>
-        );
-    };
-};
-export default RestaurentCard;
+export default React.memo(RestaurentCard);

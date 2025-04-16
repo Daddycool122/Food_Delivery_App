@@ -4,55 +4,74 @@ import useOnlineStatus from "../../utils/useOnlineStatus";
 import { Link } from "react-router-dom";
 import UserContext from "../../utils/UserContext";
 import { useSelector } from "react-redux";
-import React from 'react'
+import React from "react";
 
 function Header() {
-  let [btnName, setBtnName] = useState("Login");
-  console.log("Header render");
+  const [btnName, setBtnName] = useState("Login");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     console.log("useEffect");
-  });
+  }, []);
 
   const onlineStatus = useOnlineStatus();
-
-  const data = useContext(UserContext);
-  console.log(data);
+  const { loggedInUser } = useContext(UserContext);
 
   // Subscribing to the store using Selector
-  const cartItems = useSelector((store) => store.cart.items );
-  console.log(cartItems);
-  
+  const cartItems = useSelector((store) => store.cart.items);
 
   return (
-    <div className="flex justify-between p-3 shadow-lg bg-yellow-200 lg:bg-green-200 sm:bg-red-200">
-      <div className="">
-        <img className="w-24" src={LOGO_URL} alt="" />
+    <div className="flex justify-between items-center p-4 shadow-md bg-yellow-200 sm:bg-red-200 lg:bg-green-200">
+      <div className="flex items-center">
+        <img className="w-16 sm:w-20" src={LOGO_URL} alt="Logo" />
       </div>
-      <div className="flex items-center ">
-        <ul className="flex m-3 items-center">
-          <li className="px-3">
-            {onlineStatus ? '🟢' : '🔴'}
+
+      <button
+        className="sm:hidden text-2xl"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={isMenuOpen}
+      >
+        {isMenuOpen ? "✖" : "☰"}
+      </button>
+
+      <div
+        className={`${
+          isMenuOpen ? "flex" : "hidden"
+        } sm:flex flex-col sm:flex-row items-center absolute sm:static top-16 left-0 w-full sm:w-auto bg-yellow-200 sm:bg-transparent p-4 sm:p-0 z-10`}
+      >
+        <ul className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+          <li className="text-lg">{onlineStatus ? "🟢" : "🔴"}</li>
+          <li className="hover:text-green-700 hover:scale-105 transition-all">
+            <Link to="/" onClick={() => setIsMenuOpen(false)}>
+              Home
+            </Link>
           </li>
-          <li className="px-3 hover:text-green-700 hover:scale-105 transition-all text-bold">
-            <Link to="/">Home</Link>
+          <li className="hover:text-green-700 hover:scale-105 transition-all">
+            <Link to="/about" onClick={() => setIsMenuOpen(false)}>
+              About
+            </Link>
           </li>
-          <li className="px-3 hover:text-green-700 hover:scale-105 transition-all text-bold">
-            <Link to="/about">About</Link>
+          <li className="hover:text-green-700 hover:scale-105 transition-all">
+            <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
+              Contact Us
+            </Link>
           </li>
-          <li className="px-3 hover:text-green-700 hover:scale-105 transition-all text-bold">
-            <Link to="/contact">Contact Us</Link>
+          <li className="hover:text-green-700 hover:scale-105 transition-all">
+            <Link to="/cart" onClick={() => setIsMenuOpen(false)}>
+              Cart ({cartItems.length} items)
+            </Link>
           </li>
-          <li className=" px-3 hover:text-green-700 hover:scale-105 transition-all text-bold">
-            <Link to="/cart">Cart - ({cartItems.length} items)</Link>
-          </li>
-          <li className="px-3 hover:text-green-700 hover:scale-105 transition-all text-bold">
-            <Link to="/grocery">Grocery</Link>
+          <li className="hover:text-green-700 hover:scale-105 transition-all">
+            <Link to="/grocery" onClick={() => setIsMenuOpen(false)}>
+              Grocery
+            </Link>
           </li>
           <button
-            className="px-3 py-2 text-black bg-white border border-black rounded-lg hover:text-green-700 hover:border-green-700 hover:scale-110 transition-transform"
+            className="px-4 py-2 text-black bg-white border border-gray-400 rounded-lg hover:text-green-700 hover:border-green-700 hover:scale-105 transition-all"
             onClick={() => {
-              btnName === "Login" ? setBtnName("Logout") : setBtnName("Login");
+              setBtnName(btnName === "Login" ? "Logout" : "Login");
+              setIsMenuOpen(false);
             }}
           >
             {btnName}
