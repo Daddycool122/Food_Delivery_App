@@ -1,6 +1,6 @@
 import RestaurentCard ,{IsOpen}  from "./RestaurantCard";
 import { useEffect, useState ,useContext } from "react";
-import Shimmer from "./shimmer";
+import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useBody from "../../utils/useBody";
 import useOnlineStatus from "../../utils/useOnlineStatus";
